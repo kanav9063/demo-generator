@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #0f172a;
+  --background: #f8fafc;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Reveal.js container overrides */
+.reveal-container .reveal {
+  height: 100%;
+  width: 100%;
+}
+
+.reveal-container .reveal .slides {
+  text-align: left;
+}
+
+.reveal-container .reveal .slides section {
+  padding: 1.5rem;
+}
+
+.reveal-container .reveal pre {
+  width: 100%;
+  font-size: 0.65em;
+  box-shadow: none;
+}
+
+.reveal-container .reveal pre code {
+  max-height: 500px;
+  border-radius: 8px;
+  padding: 1em;
+}
+
+/* Teleprompter scroll */
+.teleprompter {
+  scroll-behavior: smooth;
+}
+
+.teleprompter .slide-script {
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.teleprompter .slide-script.active {
+  opacity: 1;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  animation: spin 1s linear infinite;
+  border: 3px solid #e2e8f0;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+}
