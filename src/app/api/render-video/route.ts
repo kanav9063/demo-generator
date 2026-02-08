@@ -181,6 +181,7 @@ export async function POST(req: NextRequest) {
       if (s.audioUrl) {
         const dest = path.join(bundlePublicDir, path.basename(s.audioUrl));
         fs.copyFileSync(s.audioUrl, dest);
+        console.log(`Copied audio: ${s.audioUrl} -> ${dest}`);
       }
     }
 
