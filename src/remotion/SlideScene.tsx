@@ -79,7 +79,7 @@ export const SlideScene: React.FC<SlideSceneProps> = ({ slide, durationInFrames 
       }}
     >
       {/* Audio */}
-      {slide.audioUrl && <Audio src={staticFile(slide.audioUrl.replace(/^\//, ""))} volume={1} />}
+      {slide.audioUrl && <Audio src={staticFile(slide.audioUrl)} volume={1} />}
 
       {/* Title */}
       <div

@@ -173,13 +173,13 @@ export async function POST(req: NextRequest) {
       webpackOverride: (config) => config,
     });
 
-    // Copy audio files to public dir so Remotion can serve them
-    const publicAudioDir = path.join(process.cwd(), "public", "tmp-audio");
-    fs.mkdirSync(publicAudioDir, { recursive: true });
+    // Copy audio files into the Remotion bundle's public dir
+    const bundlePublicDir = path.join(bundled, "public");
+    fs.mkdirSync(bundlePublicDir, { recursive: true });
     
     for (const s of slideData) {
       if (s.audioUrl) {
-        const dest = path.join(publicAudioDir, path.basename(s.audioUrl));
+        const dest = path.join(bundlePublicDir, path.basename(s.audioUrl));
         fs.copyFileSync(s.audioUrl, dest);
       }
     }
@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
     const inputProps = {
       slides: slideData.map((s, i) => ({
         ...s,
-        audioUrl: s.audioUrl ? `/tmp-audio/${path.basename(s.audioUrl)}` : undefined,
+        audioUrl: s.audioUrl ? path.basename(s.audioUrl) : undefined,
       })),
       fps: FPS,
       totalDurationInFrames: totalFrames,
@@ -222,7 +222,7 @@ export async function POST(req: NextRequest) {
 
     // Clean up temp files
     fs.rmSync(tmpDir, { recursive: true, force: true });
-    fs.rmSync(publicAudioDir, { recursive: true, force: true });
+    // bundled dir is in /tmp and will be cleaned up by OS
 
     return new NextResponse(videoBuffer, {
       headers: {
