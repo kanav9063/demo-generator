@@ -10,7 +10,7 @@ interface SlidePreviewProps {
 
 export default function SlidePreview({ presentation, onSlideChange }: SlidePreviewProps) {
   const deckRef = useRef<HTMLDivElement>(null);
-  const revealRef = useRef<ReturnType<typeof import("reveal.js")> | null>(null);
+  const revealRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
