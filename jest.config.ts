@@ -1,0 +1,27 @@
+import type { Config } from "jest";
+
+const config: Config = {
+  testEnvironment: "jsdom",
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: {
+          jsx: "react-jsx",
+          module: "commonjs",
+          moduleResolution: "node",
+          esModuleInterop: true,
+          paths: { "@/*": ["./src/*"] },
+        },
+      },
+    ],
+  },
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  transformIgnorePatterns: ["/node_modules/(?!reveal\\.js)"],
+  testMatch: ["<rootDir>/__tests__/**/*.test.ts", "<rootDir>/__tests__/**/*.test.tsx"],
+};
+
+export default config;
