@@ -7,15 +7,13 @@ const defaultProps: VideoCompositionProps = {
   slides: [
     {
       title: "Welcome",
-      content:
-        "<ul><li>This is a demo video</li><li>Generated automatically</li></ul>",
+      content: "<ul><li>This is a demo video</li><li>Generated automatically</li></ul>",
       notes: "Welcome to this automatically generated demo video.",
       audioDurationInFrames: 150,
     },
     {
       title: "Code Example",
-      content:
-        '<pre><code>const hello = "world";\nconsole.log(hello);</code></pre>',
+      content: '<pre><code>const hello = "world";\nconsole.log(hello);</code></pre>',
       notes: "Here we see a simple code example.",
       audioDurationInFrames: 150,
     },
