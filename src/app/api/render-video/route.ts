@@ -38,7 +38,7 @@ async function generateTTSElevenLabs(
       },
       body: JSON.stringify({
         text,
-        model_id: "eleven_monolingual_v1",
+        model_id: "eleven_multilingual_v2",
         voice_settings: { stability: 0.5, similarity_boost: 0.75 },
       }),
     }
@@ -173,12 +173,21 @@ export async function POST(req: NextRequest) {
       webpackOverride: (config) => config,
     });
 
+    // Copy audio files to public dir so Remotion can serve them
+    const publicAudioDir = path.join(process.cwd(), "public", "tmp-audio");
+    fs.mkdirSync(publicAudioDir, { recursive: true });
+    
+    for (const s of slideData) {
+      if (s.audioUrl) {
+        const dest = path.join(publicAudioDir, path.basename(s.audioUrl));
+        fs.copyFileSync(s.audioUrl, dest);
+      }
+    }
+
     const inputProps = {
       slides: slideData.map((s, i) => ({
         ...s,
-        // For Remotion, audio needs to be served. We'll use staticFile or inline.
-        // Since we're server-side rendering, we use the absolute path.
-        audioUrl: s.audioUrl ? `file://${s.audioUrl}` : undefined,
+        audioUrl: s.audioUrl ? `/tmp-audio/${path.basename(s.audioUrl)}` : undefined,
       })),
       fps: FPS,
       totalDurationInFrames: totalFrames,
@@ -213,6 +222,7 @@ export async function POST(req: NextRequest) {
 
     // Clean up temp files
     fs.rmSync(tmpDir, { recursive: true, force: true });
+    fs.rmSync(publicAudioDir, { recursive: true, force: true });
 
     return new NextResponse(videoBuffer, {
       headers: {
