@@ -11,6 +11,8 @@ interface ExportBarProps {
 export default function ExportBar({ presentation }: ExportBarProps) {
   const [ttsLoading, setTtsLoading] = useState(false);
   const [ttsVoice, setTtsVoice] = useState("nova");
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoProgress, setVideoProgress] = useState("");
 
   const downloadFile = (content: string, filename: string, mime: string) => {
     const blob = new Blob([content], { type: mime });
@@ -58,6 +60,43 @@ export default function ExportBar({ presentation }: ExportBarProps) {
       alert(`TTS Error: ${err instanceof Error ? err.message : "Unknown error"}`);
     } finally {
       setTtsLoading(false);
+    }
+  };
+
+  const exportVideo = async () => {
+    setVideoLoading(true);
+    setVideoProgress("Generating TTS audio...");
+    try {
+      const res = await fetch("/api/render-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: presentation.title,
+          slides: presentation.slides,
+        }),
+      });
+
+      setVideoProgress("Rendering video...");
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Video render failed");
+      }
+
+      setVideoProgress("Downloading...");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "demo-video.mp4";
+      a.click();
+      URL.revokeObjectURL(url);
+      setVideoProgress("");
+    } catch (err) {
+      alert(`Video Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+      setVideoProgress("");
+    } finally {
+      setVideoLoading(false);
     }
   };
 
@@ -112,6 +151,26 @@ export default function ExportBar({ presentation }: ExportBarProps) {
           )}
           Narration (MP3)
         </button>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={exportVideo}
+          disabled={videoLoading}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white rounded-md transition-colors"
+        >
+          {videoLoading ? (
+            <div className="spinner !w-4 !h-4 !border-2 !border-white/30 !border-t-white" />
+          ) : (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          )}
+          Generate Video (MP4)
+        </button>
+        {videoProgress && (
+          <span className="text-xs text-slate-500">{videoProgress}</span>
+        )}
       </div>
     </div>
   );

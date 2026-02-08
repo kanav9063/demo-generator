@@ -12,11 +12,16 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@remotion/bundler": "^4.0.419",
+    "@remotion/cli": "^4.0.419",
+    "@remotion/renderer": "^4.0.419",
+    "@remotion/transitions": "^4.0.419",
     "highlight.js": "^11.11.1",
     "next": "14.2.21",
     "openai": "^4.77.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "remotion": "^4.0.419",
     "reveal.js": "^5.1.0"
   },
   "devDependencies": {
