@@ -10,4 +10,5 @@ export interface VideoCompositionProps {
   slides: SlideData[];
   fps: number;
   totalDurationInFrames: number;
+  presentationTitle?: string;
 }

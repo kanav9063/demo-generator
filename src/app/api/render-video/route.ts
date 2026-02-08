@@ -12,7 +12,7 @@ interface SlideInput {
 }
 
 interface RenderRequest {
-  title: string;
+  title?: string;
   slides: SlideInput[];
 }
 
@@ -114,7 +114,7 @@ async function generateTTS(text: string, outputPath: string): Promise<number> {
 export async function POST(req: NextRequest) {
   try {
     const body: RenderRequest = await req.json();
-    const { slides } = body;
+    const { slides, title } = body;
 
     if (!slides || slides.length === 0) {
       return NextResponse.json({ error: "No slides provided" }, { status: 400 });
@@ -126,7 +126,8 @@ export async function POST(req: NextRequest) {
 
     // Generate TTS for each slide
     const slideData = [];
-    let totalFrames = 0;
+    const titleSlideDuration = title ? Math.ceil(FPS * 3) : 0; // 3s title slide
+    let totalFrames = titleSlideDuration;
 
     for (let i = 0; i < slides.length; i++) {
       const slide = slides[i];
@@ -192,6 +193,7 @@ export async function POST(req: NextRequest) {
       })),
       fps: FPS,
       totalDurationInFrames: totalFrames,
+      presentationTitle: title || undefined,
     };
 
     console.log("Selecting composition...");
